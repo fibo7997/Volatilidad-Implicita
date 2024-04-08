@@ -88,6 +88,8 @@ double findImpliedVolatilityBoost(double S, double K, double T, double r, double
     return result.first; // El primer elemento es sigma (volatilidad)
 }
 
+//funcion principal
+//primero abrimos el archivo csv.
 int main() {
     ifstream file("C:\\Users\\Principal\\Desktop\\Neix\\Exp_Octubre.csv");
     if (!file.is_open()) {
@@ -95,25 +97,24 @@ int main() {
         return 1;
     }
 
-  
-
+  //definimos csv de output
     ofstream outputFile("C:\\Users\\Principal\\Desktop\\Neix\\excel1.csv");
     if (!outputFile.is_open()) {
         cerr << "Error opening output file" << endl;
         file.close(); // Make sure to close the input file before returning
         return 1;
     }
-
+//aca hacemos que el output file tenga un formato (ej: "." como separador decimal) para nuestros datos numericos
     outputFile.imbue(locale("C"));
-
+//creo variable line de tipo string para leer linea por linea el archivo. utilizado con getline() mas adelante
     string line;
 
 
 
-    // This is our reference date for "Time to Maturity"
+    // Esta es la fecha de vencimiento de los calls de octubre 2023 de Galicia. Usamos esta fecha para restarle cada linea del csv. y calcular el time to maturity.
     tm maturityDate = parseDateTime("10/21/2023 17:00");
 
-    // Fixed value for the risk free rate
+    // Valor fijo de la tasa libre de riesgo
     const double risk_free_rate = 0.9;
 
     if (getline(file, line)) {
@@ -126,7 +127,7 @@ int main() {
             cerr << "Skipping malformed line: " << line << endl;
             continue;
         }
-        
+    // extraemos los tokens y calculamos precioCall y precioSubyacente como el promedio de los valores provistos.
         string bid = tokens[3];
         string ask = tokens[4];
         string underBid = tokens[5];
@@ -137,23 +138,23 @@ int main() {
         double underAskValue = underAsk != "\\N" ? stod(underAsk) : 0.0;
         double precioCall = (bidValue + askValue) / 2;
         double precioSubyacente = (underBidValue + underAskValue) / 2;
-
+// parseamos la columna createAt en formato dateTime
         tm createdAt = parseDateTime(tokens[7]);
 
-        // Convert to time_t for easy difference calculation
+        // Convertimos a time_t para facilitar calculo 
         time_t createdAtTime = mktime(&createdAt);
         time_t maturityTime = mktime(&maturityDate);
         
-        // Calculate difference in seconds, then convert to days, hours, and minutes
+        // Calculo al diferencia (para el time to maturity) en segundos, y despues covierto en dias horas y minutos.
         double secondsDiff = difftime(maturityTime, createdAtTime);
         int days = secondsDiff / (24 * 3600);
         int hours = (int(secondsDiff) % (24 * 3600)) / 3600;
         int minutes = (int(secondsDiff) % 3600) / 60;
 
-        // Convert days, hours, and minutes to the fraction of the trading year
-        double timeToMaturityInYears = days / 252.0; // Only days for simplicity
-        timeToMaturityInYears += (hours / 24.0) / 252.0; // Adding fraction of day from hours
-        timeToMaturityInYears += (minutes / 1440.0) / 252.0; // Adding fraction of day from minutes
+        // Convierto los dias, horas y minutos en fraccion de año tradeado (252 dias) 
+        double timeToMaturityInYears = days / 252.0; // Solo dias
+        timeToMaturityInYears += (hours / 24.0) / 252.0; // Agrego fraccion del dia proveniente de las horas
+        timeToMaturityInYears += (minutes / 1440.0) / 252.0; // Lo mismo para los minutos
 
         stringstream precioCallStream;
         precioCallStream.imbue(locale::classic());
