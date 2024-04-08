@@ -46,17 +46,17 @@ double norm_cdf(const double x) {
         return 1.0 - norm_cdf(-x);
     }
 }
-//
+
+//calcula el precio de una opcion call europea usando el metodo de BS. d1 y d2 son calculados con el precio del subyacente, el strike, el time to maturity, la tasa libre de riesgo, y la volatilidad
+//se mide la sensibilidad del precio del call a los diferentes parametros
 double blackScholesCall(double S, double K, double T, double r, double sigma) {
     double d1 = (log(S / K) + (r + 0.5 * sigma * sigma) * T) / (sigma * sqrt(T));
     double d2 = d1 - sigma * sqrt(T);
     return S * norm_cdf(d1) - K * exp(-r * T) * norm_cdf(d2);
 }
 
-
-
-
-// Functor for the difference between the Black-Scholes call price and the market price
+// clase creada para calcular la diferencia entre el precio teorico de un call usando BS, y su valor real de mercado (precioCall). Se utiliza para resolver la volatilidad implicita (siguiente paso)
+//lass declaraciones en public pueden ser accedidas fuera de la clase, private no.
 class BlackScholesPriceDiff {
 public:
     BlackScholesPriceDiff(double S, double K, double T, double r, double marketPrice)
@@ -74,6 +74,9 @@ private:
     double marketPrice;
 };
 
+//calcula la volatilidad implicita de un call europeo usando el metodo de Brent (algoritmo que busca minizmizar la diferencia entre el precio teorico(BS) y el precio de mercado)
+//el objetivo es encontrar la volatilidad que hace que el precio del call calculado en BS matchee el precio de mercado (precioCall)
+//los parametros podrian ser mas acotados ya que es dificil encontrar 1000% de VI. Las iteraciones aumentan las probabilidades de que el algoritmo encuentre un root.
 double findImpliedVolatilityBoost(double S, double K, double T, double r, double marketPrice) {
     double low_vol = 0.001;
     double high_vol = 10.0;
@@ -82,7 +85,7 @@ double findImpliedVolatilityBoost(double S, double K, double T, double r, double
 
     std::pair<double, double> result = brent_find_minima(priceDiff, low_vol, high_vol, std::numeric_limits<double>::digits, max_iterations);
 
-    return result.first; // The first element of the pair is the sigma (volatility)
+    return result.first; // El primer elemento es sigma (volatilidad)
 }
 
 int main() {
