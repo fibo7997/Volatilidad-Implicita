@@ -104,7 +104,7 @@ int main() {
         file.close(); // Make sure to close the input file before returning
         return 1;
     }
-//aca hacemos que el output file tenga un formato (ej: "." como separador decimal) para nuestros datos numericos
+//aca hacemos que el output file tenga un formato ( "." como separador decimal) para nuestros datos numericos
     outputFile.imbue(locale("C"));
 //creo variable line de tipo string para leer linea por linea el archivo. utilizado con getline() mas adelante
     string line;
@@ -145,7 +145,7 @@ int main() {
         time_t createdAtTime = mktime(&createdAt);
         time_t maturityTime = mktime(&maturityDate);
         
-        // Calculo al diferencia (para el time to maturity) en segundos, y despues covierto en dias horas y minutos.
+        // Calculo al diferencia (para el time to maturity) en segundos, y despues convierto en dias, horas y minutos.
         double secondsDiff = difftime(maturityTime, createdAtTime);
         int days = secondsDiff / (24 * 3600);
         int hours = (int(secondsDiff) % (24 * 3600)) / 3600;
@@ -156,6 +156,7 @@ int main() {
         timeToMaturityInYears += (hours / 24.0) / 252.0; // Agrego fraccion del dia proveniente de las horas
         timeToMaturityInYears += (minutes / 1440.0) / 252.0; // Lo mismo para los minutos
 
+        //para formatear valores numericos como strings antes de convertirlo en objetos std::string
         stringstream precioCallStream;
         precioCallStream.imbue(locale::classic());
         precioCallStream << fixed << setprecision(2) << precioCall;
@@ -166,7 +167,7 @@ int main() {
         precioSubyacenteStream << fixed << setprecision(2) << precioSubyacente;
         string precioSubyacenteStr = precioSubyacenteStream.str();
 
-        // Output the original line with the new columns
+        // Output con las nuevas columnas 
         outputFile << line << ";" 
                    << (bid != "\\N" && ask != "\\N" ? precioCallStr : "N/A") << ";" 
                    << (underBid != "\\N" && underAsk != "\\N" ? precioSubyacenteStr : "N/A") << ";"
@@ -174,7 +175,7 @@ int main() {
                    << fixed << setprecision(6) << timeToMaturityInYears << ";"
                    << fixed << setprecision(1) << risk_free_rate;
 
-        if (precioCall > 0 && underBidValue > 0 && underAskValue > 0) { // additional checks for positive prices
+        if (precioCall > 0 && underBidValue > 0 && underAskValue > 0) { // check para valores positivos y calculo de la volatilidad con todos los datos
             double impliedVol = findImpliedVolatilityBoost(precioSubyacente, 1033.0, timeToMaturityInYears, risk_free_rate, precioCall);
             outputFile << ";" << fixed << setprecision(4) << impliedVol;
         } else {
@@ -185,7 +186,7 @@ int main() {
     file.close();
     outputFile.close();
 
-    cout << "Processing complete. Output saved to excel1.csv" << endl;
+    cout << "Output saveado a excel1.csv" << endl; //exporto a csv
 
     return 0;
 }
