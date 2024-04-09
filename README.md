@@ -1,6 +1,6 @@
 # Volatilidad-Implicita
 
-Este programa busca calcular la volatilidad implicita de una serie de tiempo de calls de Galicia. 
+Este programa busca calcular la volatilidad implicita de una serie de tiempo de calls de Galicia (desde el 8/9/23 hasta el 19/10/23). 
 
 La volatilidad implicita es aquella que esta representada por el precio del call. Es decir, lo que el mercado esta sobre especulando sobre el activo. Estos swings de volatilidad se dan en un contexto electoral, en donde el riesgo de Galicia es representado por el riesgo del pais (aparte de que el beta de galicia suele rondar 1). 
 
