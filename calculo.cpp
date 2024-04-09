@@ -42,7 +42,6 @@ double norm_cdf(const double x) {
         double k_sum = k * (0.319381530 + k * (-0.356563782 + k * (1.781477937 + k * (-1.821255978 + 1.330274429 * k))));
         return (1.0 - (1.0 / (pow(2 * M_PI, 0.5))) * exp(-0.5 * x * x) * k_sum);
     } else {
-        // If x is negative, use the symmetry property of the normal CDF
         return 1.0 - norm_cdf(-x);
     }
 }
@@ -93,24 +92,22 @@ double findImpliedVolatilityBoost(double S, double K, double T, double r, double
 int main() {
     ifstream file("C:\\Users\\Principal\\Desktop\\Neix\\Exp_Octubre.csv");
     if (!file.is_open()) {
-        cerr << "Error opening file" << endl;
+        cerr << "Error" << endl;
         return 1;
     }
 
   //definimos csv de output
     ofstream outputFile("C:\\Users\\Principal\\Desktop\\Neix\\excel1.csv");
     if (!outputFile.is_open()) {
-        cerr << "Error opening output file" << endl;
-        file.close(); // Make sure to close the input file before returning
+        cerr << "Error" << endl;
+        file.close(); 
         return 1;
     }
 //aca hacemos que el output file tenga un formato ( "." como separador decimal) para nuestros datos numericos
     outputFile.imbue(locale("C"));
 //creo variable line de tipo string para leer linea por linea el archivo. utilizado con getline() mas adelante
     string line;
-
-
-
+    
     // Esta es la fecha de vencimiento de los calls de octubre 2023 de Galicia. Usamos esta fecha para restarle cada linea del csv. y calcular el time to maturity.
     tm maturityDate = parseDateTime("10/21/2023 17:00");
 
