@@ -21,3 +21,9 @@ El orden en el que se desarrollo este programa es el siguiente:
 7. Se exporto el archivo a un csv.
 
 La volatilidad realizada fue calculada en el archivo de python, en donde uni el csv. de c++ y grafique las imagenes correspondientes.
+
+
+Problemas encontrados:
+
+Al principio intente calcular la volatilidad implicita con un seteo manual, sin la ayuda de una biblioteca. Los datos me daban erroneos y repetidos. La implementacion de Boost me permitio obtener el output deseado.
+
