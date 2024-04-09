@@ -75,9 +75,9 @@ private:
 
 //calcula la volatilidad implicita de un call europeo usando el metodo de Brent (algoritmo que busca minizmizar la diferencia entre el precio teorico(BS) y el precio de mercado)
 //el objetivo es encontrar la volatilidad que hace que el precio del call calculado en BS matchee el precio de mercado (precioCall)
-//los parametros podrian ser mas acotados ya que es dificil encontrar 1000% de VI. Las iteraciones aumentan las probabilidades de que el algoritmo encuentre un root.
+//los parametros son acordes al mercado argentino. Las iteraciones aumentan las probabilidades de que el algoritmo encuentre una raiz.
 double findImpliedVolatilityBoost(double S, double K, double T, double r, double marketPrice) {
-    double low_vol = 0.003;
+    double low_vol = 0.05;
     double high_vol = 4.0;
     BlackScholesPriceDiff priceDiff(S, K, T, r, marketPrice);
     std::uintmax_t max_iterations = 100000; // Defino las max_iterations con standard uintmax_t
