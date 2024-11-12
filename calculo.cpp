@@ -36,7 +36,6 @@ tm parseDateTime(const string& dateTime) {
 //para valores positivos de x, la funcion usa una aproximacion polinomica. Los coeficientes (0.319381530, -0.356563782, etc.) estan predeterminados para fitear en un una funcion de distriubcion acumulada normal.
 //cuando x es negativo, por simetria de la distriubion, tiene la misma probabilidad que x=1
 double norm_cdf(const double x) {
-    // Approximation of the normal CDF for positive x
     if (x >= 0.0) {
         double k = 1.0 / (1.0 + 0.2316419 * x);
         double k_sum = k * (0.319381530 + k * (-0.356563782 + k * (1.781477937 + k * (-1.821255978 + 1.330274429 * k))));
